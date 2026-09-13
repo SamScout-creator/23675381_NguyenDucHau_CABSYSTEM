@@ -1,0 +1,102 @@
+create_booking:
+  post:
+    summary: Khởi tạo yêu cầu Đặt xe mới
+    tags:
+      - Customer & Bookings
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - pickup_address
+              - pickup_lat
+              - pickup_long
+              - dropoff_address
+              - dropoff_lat
+              - dropoff_long
+              - vehicle_type
+              - payment_method
+            properties:
+              pickup_address:
+                type: string
+                example: "Chợ Bến Thành, Quận 1, TP.HCM"
+              pickup_lat:
+                type: number
+                example: 10.7725
+              pickup_long:
+                type: number
+                example: 106.6980
+              dropoff_address:
+                type: string
+                example: "Sân bay Tân Sơn Nhất, Tân Bình, TP.HCM"
+              dropoff_lat:
+                type: number
+                example: 10.8185
+              dropoff_long:
+                type: number
+                example: 106.6588
+              vehicle_type:
+                type: string
+                enum: [CAB_4, CAB_7]
+                example: "CAB_4"
+              payment_method:
+                type: string
+                enum: [CASH, PGW_CARD, PGW_WALLET]
+                example: "PGW_CARD"
+    responses:
+      '201':
+        description: Tạo yêu cầu thành công, đang điều phối tìm xe
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 201
+              message: "Đang điều phối tìm tài xế"
+              data:
+                booking_id: 880214
+                status: "SEARCHING"
+                timeout_seconds: 60
+
+get_booking:
+  get:
+    summary: Tra cứu trạng thái cuốc xe thời gian thực
+    tags:
+      - Customer & Bookings
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        example: 880214
+    responses:
+      '200':
+        description: Lấy thông tin trạng thái cuốc xe thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 200
+              message: "Lấy chi tiết cuốc xe thành công"
+              data:
+                booking_id: 880214
+                status: "ASSIGNED"
+                driver:
+                  driver_id: 502
+                  full_name: "Tran Van Tai"
+                  phone_number: "0912345678"
+                  vehicle:
+                    license_plate: "51H-999.88"
+                    model: "Toyota Vios"
+                  current_location:
+                    lat: 10.7740
+                    long: 106.6995
+                    eta_minutes: 2
