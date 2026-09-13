@@ -1,0 +1,28 @@
+400BadRequest:
+  description: Tham số gửi lên không hợp lệ hoặc thiếu trường bắt buộc
+  content:
+    application/json:
+      schema:
+        $ref: './schemas.yaml#/ErrorEnvelope'
+
+401Unauthorized:
+  description: Lỗi IAM AuthN - Chưa đăng nhập hoặc Token JWT hết hạn
+  content:
+    application/json:
+      schema:
+        $ref: './schemas.yaml#/ErrorEnvelope'
+      example:
+        code: 401
+        error_key: "ERR_UNAUTHORIZED"
+        message: "Phiên đăng nhập hết hạn hoặc Token không hợp lệ"
+
+403Forbidden:
+  description: Lỗi IAM AuthZ - Người dùng không đủ quyền hạn RBAC
+  content:
+    application/json:
+      schema:
+        $ref: './schemas.yaml#/ErrorEnvelope'
+      example:
+        code: 403
+        error_key: "ERR_FORBIDDEN"
+        message: "Bạn không có quyền truy cập vào tài nguyên này"
