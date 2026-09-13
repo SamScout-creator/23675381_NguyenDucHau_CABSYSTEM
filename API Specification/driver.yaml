@@ -1,0 +1,134 @@
+update_status:
+  patch:
+    summary: Bật/Tắt trạng thái làm việc (Online / Offline)
+    tags:
+      - Driver Subsystem
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - status
+            properties:
+              status:
+                type: string
+                enum: [ONLINE, OFFLINE]
+                example: "ONLINE"
+    responses:
+      '200':
+        description: Cập nhật trạng thái thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+
+send_location:
+  post:
+    summary: Gửi định vị GPS thời gian thực (Background Tracker)
+    tags:
+      - Driver Subsystem
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - latitude
+              - longitude
+              - recorded_at
+            properties:
+              latitude:
+                type: number
+                example: 10.774012
+              longitude:
+                type: number
+                example: 106.699511
+              speed:
+                type: number
+                example: 35.5
+              recorded_at:
+                type: string
+                format: date-time
+                example: "2026-09-13T16:02:05Z"
+    responses:
+      '200':
+        description: Ghi nhận GPS thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+
+respond_booking:
+  post:
+    summary: Phản hồi nhận cuốc xe (15 giây đếm ngược)
+    tags:
+      - Driver Subsystem
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - action
+            properties:
+              action:
+                type: string
+                enum: [ACCEPT, REJECT]
+                example: "ACCEPT"
+    responses:
+      '200':
+        description: Xử lý thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+
+update_step:
+  patch:
+    summary: Cập nhật tiến độ hành trình (1-chạm)
+    tags:
+      - Driver Subsystem
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - step
+            properties:
+              step:
+                type: string
+                enum: [ARRIVED_AT_PICKUP, PICKED_UP]
+                example: "ARRIVED_AT_PICKUP"
+    responses:
+      '200':
+        description: Cập nhật mốc hành trình thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
