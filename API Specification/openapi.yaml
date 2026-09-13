@@ -1,0 +1,66 @@
+openapi: 3.0.3
+info:
+  title: CAB System API Specification (Nền tảng đặt xe trực tuyến ABC)
+  description: |
+    Tài liệu đặc tả API chuẩn OpenAPI 3.0 phân tán đa file (Modular API Specs).
+    Tích hợp phân hệ IAM (AuthN/AuthZ qua JWT RBAC), Envelope Data Pattern và ánh xạ trực tiếp từ các Functional Requirements (FR).
+  version: 1.0.0
+servers:
+  - url: https://api.cabsystem.com/api/v1
+    description: Production Gateway Server
+  - url: https://staging-api.cabsystem.com/api/v1
+    description: Staging / Sandbox Environment
+
+paths:
+  # Module IAM / Authentication
+  /auth/otp/send:
+    $ref: './paths/auth.yaml#/send_otp'
+  /auth/otp/verify:
+    $ref: './paths/auth.yaml#/verify_otp'
+
+  # Module Rides & Estimation
+  /rides/estimate:
+    $ref: './paths/rides.yaml#/estimate_fare'
+
+  # Module Bookings
+  /bookings:
+    $ref: './paths/bookings.yaml#/create_booking'
+  /bookings/{booking_id}:
+    $ref: './paths/bookings.yaml#/get_booking'
+
+  # Module Driver
+  /driver/status:
+    $ref: './paths/driver.yaml#/update_status'
+  /driver/location:
+    $ref: './paths/driver.yaml#/send_location'
+  /driver/bookings/{booking_id}/respond:
+    $ref: './paths/driver.yaml#/respond_booking'
+  /driver/bookings/{booking_id}/step:
+    $ref: './paths/driver.yaml#/update_step'
+
+  # Module Payment & Fare
+  /bookings/{booking_id}/complete-and-charge:
+    $ref: './paths/payments.yaml#/complete_and_charge'
+
+  # Module Admin & Operations
+  /admin/rides/live:
+    $ref: './paths/admin.yaml#/live_rides'
+  /admin/reports/summary:
+    $ref: './paths/admin.yaml#/reports_summary'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      $ref: './components/security.yaml#/BearerAuth'
+  schemas:
+    SuccessEnvelope:
+      $ref: './components/schemas.yaml#/SuccessEnvelope'
+    ErrorEnvelope:
+      $ref: './components/schemas.yaml#/ErrorEnvelope'
+  responses:
+    400BadRequest:
+      $ref: './components/responses.yaml#/400BadRequest'
+    401Unauthorized:
+      $ref: './components/responses.yaml#/401Unauthorized'
+    403Forbidden:
+      $ref: './components/responses.yaml#/403Forbidden'
