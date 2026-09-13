@@ -1,0 +1,61 @@
+estimate_fare:
+  post:
+    summary: Ước tính cước phí & Tuyến đường (Fare Estimation)
+    tags:
+      - Customer & Bookings
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - pickup_lat
+              - pickup_long
+              - dropoff_lat
+              - dropoff_long
+            properties:
+              pickup_address:
+                type: string
+                example: "Chợ Bến Thành, Quận 1, TP.HCM"
+              pickup_lat:
+                type: number
+                example: 10.7725
+              pickup_long:
+                type: number
+                example: 106.6980
+              dropoff_address:
+                type: string
+                example: "Sân bay Tân Sơn Nhất, Tân Bình, TP.HCM"
+              dropoff_lat:
+                type: number
+                example: 10.8185
+              dropoff_long:
+                type: number
+                example: 106.6588
+    responses:
+      '200':
+        description: Dự toán cước thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 200
+              message: "Tính cước ước tính thành công"
+              data:
+                distance_km: 7.8
+                duration_minutes: 25
+                services:
+                  - vehicle_type: "CAB_4"
+                    name: "CAB 4 Chỗ Tiêu Chuẩn"
+                    estimated_fare: 115000
+                    currency: "VND"
+                    eta_minutes: 3
+                  - vehicle_type: "CAB_7"
+                    name: "CAB 7 Chỗ Rộng Rãi"
+                    estimated_fare: 145000
+                    currency: "VND"
+                    eta_minutes: 5
