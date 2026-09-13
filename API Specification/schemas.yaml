@@ -1,0 +1,43 @@
+SuccessEnvelope:
+  type: object
+  required:
+    - code
+    - message
+    - data
+  properties:
+    code:
+      type: integer
+      example: 200
+    message:
+      type: string
+      example: "Thao tác thành công"
+    data:
+      type: object
+
+ErrorEnvelope:
+  type: object
+  required:
+    - code
+    - error_key
+    - message
+  properties:
+    code:
+      type: integer
+      example: 400
+    error_key:
+      type: string
+      example: "ERR_VALIDATION_FAILED"
+    message:
+      type: string
+      example: "Dữ liệu gửi lên không đúng định dạng"
+    details:
+      type: array
+      items:
+        type: object
+        properties:
+          field:
+            type: string
+            example: "phone_number"
+          issue:
+            type: string
+            example: "Số điện thoại không hợp lệ"
