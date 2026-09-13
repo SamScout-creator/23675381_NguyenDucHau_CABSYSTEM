@@ -1,0 +1,77 @@
+live_rides:
+  get:
+    summary: Giám sát danh sách cuốc xe trực tiếp (Live Operations)
+    tags:
+      - Admin & Operations
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum: [SEARCHING, ASSIGNED, ARRIVED, IN_TRANSIT]
+          example: "IN_TRANSIT"
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+    responses:
+      '200':
+        description: Danh sách cuốc xe đang chạy
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+      '403':
+        $ref: '../components/responses.yaml#/403Forbidden'
+
+reports_summary:
+  get:
+    summary: Trích xuất báo cáo kinh doanh tổng hợp (Chỉ dành cho ADMIN)
+    tags:
+      - Admin & Operations
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: from_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "2026-09-01"
+      - name: to_date
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+          example: "2026-09-13"
+    responses:
+      '200':
+        description: Báo cáo kinh doanh tổng hợp
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 200
+              message: "Trích xuất báo cáo thành công"
+              data:
+                total_trips: 12500
+                completed_trips: 11200
+                completion_rate: 0.896
+                cancelled_by_rider: 850
+                cancelled_by_driver: 300
+                no_driver_found: 150
+                total_revenue: 1420000000
+                currency: "VND"
+      '403':
+        $ref: '../components/responses.yaml#/403Forbidden'

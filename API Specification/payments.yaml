@@ -1,0 +1,64 @@
+complete_and_charge:
+  post:
+    summary: Hoàn thành chuyến xe & Xử lý trừ tiền cước
+    tags:
+      - Payment & Fares
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: booking_id
+        in: path
+        required: true
+        schema:
+          type: integer
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - dropoff_lat_actual
+              - dropoff_long_actual
+            properties:
+              dropoff_lat_actual:
+                type: number
+                example: 10.81845
+              dropoff_long_actual:
+                type: number
+                example: 106.65879
+              toll_fee:
+                type: number
+                example: 10000
+    responses:
+      '200':
+        description: Chốt cước và thanh toán thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            examples:
+              pgw_success:
+                summary: Trừ tiền thẻ PGW thành công
+                value:
+                  code: 200
+                  message: "Thanh toán thẻ thành công"
+                  data:
+                    booking_id: 880214
+                    status: "COMPLETED"
+                    payment_method: "PGW_CARD"
+                    total_amount: 125000
+                    payment_status: "SUCCESS"
+                    pgw_transaction_id: "TXN_VNPay_20260913_889911"
+              pgw_failure_cash_fallback:
+                summary: Thẻ lỗi - Tự động cách ly chuyển sang Tiền mặt (BR-04)
+                value:
+                  code: 200
+                  message: "Thanh toán thẻ thất bại, chuyển sang thu tiền mặt"
+                  data:
+                    booking_id: 880214
+                    status: "COMPLETED"
+                    payment_method: "CASH"
+                    total_amount: 125000
+                    payment_status: "PENDING_CASH"
+                    instruction: "Tài xế trực tiếp thu 125.000 VNĐ từ hành khách"

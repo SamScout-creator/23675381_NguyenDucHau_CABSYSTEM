@@ -1,0 +1,8 @@
+BearerAuth:
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  description: |
+    Cơ chế xác thực IAM (Identity & Access Management).
+    Client gửi Token qua Header `Authorization: Bearer <access_token>`.
+    Payload của JWT chứa thuộc tính `role: CUSTOMER | DRIVER | DISPATCHER | ADMIN` làm cơ sở cho phân quyền truy cập (AuthZ/RBAC).
