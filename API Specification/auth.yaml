@@ -1,0 +1,84 @@
+send_otp:
+  post:
+    summary: Gửi mã OTP xác thực (Đăng ký / Đăng nhập)
+    tags:
+      - IAM & Authentication
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - phone_number
+              - purpose
+            properties:
+              phone_number:
+                type: string
+                example: "0987654321"
+              purpose:
+                type: string
+                enum: [REGISTER, LOGIN, RESET_PASSWORD]
+                example: "LOGIN"
+    responses:
+      '200':
+        description: Gửi OTP thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 200
+              message: "Mã OTP đã gửi thành công"
+              data:
+                otp_session_id: "otp_sess_9a8b7c6d5e"
+                expires_in_seconds: 120
+      '400':
+        $ref: '../components/responses.yaml#/400BadRequest'
+
+verify_otp:
+  post:
+    summary: Xác thực OTP & Cấp phát JWT Token (IAM Login)
+    tags:
+      - IAM & Authentication
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - otp_session_id
+              - otp_code
+            properties:
+              otp_session_id:
+                type: string
+                example: "otp_sess_9a8b7c6d5e"
+              otp_code:
+                type: string
+                example: "686868"
+    responses:
+      '200':
+        description: Xác thực danh tính thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/SuccessEnvelope'
+            example:
+              code: 200
+              message: "Xác thực danh tính thành công"
+              data:
+                user:
+                  user_id: 1001
+                  full_name: "Nguyen Van A"
+                  phone_number: "0987654321"
+                  role: "CUSTOMER"
+                tokens:
+                  access_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  refresh_token: "d98e7a6f-5b4c-3d2e-1f0a-9876543210ab"
+                  token_type: "Bearer"
+                  expires_in: 7200
+      '401':
+        $ref: '../components/responses.yaml#/401Unauthorized'
